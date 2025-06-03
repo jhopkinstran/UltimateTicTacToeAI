@@ -4,7 +4,6 @@ def render_board(game_state):
     symbols = {1: 'X', -1: 'O', 0: ' '}
 
     def render_macro_row(m_row):
-        # Collect 3 rows from each MiniBoard and combine them
         lines = [""] * 3
         for mini in m_row:
             for i in range(3):
@@ -16,6 +15,6 @@ def render_board(game_state):
     for macro_row_index, macro_row in enumerate(macro):
         lines = render_macro_row(macro_row)
         for line in lines:
-            print(line[:-2])  # Remove last '||'
+            print(line[:-2])
         if macro_row_index < 2:
-            print("=" * 35)  # Divider between macro rows
+            print("=" * 35)

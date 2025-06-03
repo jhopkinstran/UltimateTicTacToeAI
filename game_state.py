@@ -1,6 +1,7 @@
 from board import UltimateBoard
+
 class GameState:
-    def __init__(self, board, ruleset = 'default'):
+    def __init__(self, board, ruleset = "default"):
         self.ruleset = ruleset
         self.board = board
         self.player_turn = 1
@@ -16,8 +17,10 @@ class GameState:
         if not self.is_legal_move(ult_row, ult_col, row, col):
             raise ValueError(f"Illegal move at ({ult_row}, {ult_col}, {row}, {col})")
 
-        miniboard = self.board.get_mini_board(ult_row, ult_col)
-        miniboard.make_move(row, col, self.player_turn)
+        # miniboard = self.board.get_mini_board(ult_row, ult_col)
+        # miniboard.make_move(row, col, self.player_turn)
+
+        self.board.make_move(ult_row, ult_col, row, col, self.player_turn)
 
         self.last_move = (ult_row, ult_col, row, col)
 

@@ -41,7 +41,6 @@ class UltimateBoard:
         self.complete = False
 
     def make_move(self, ult_row, ult_col, row, col, player):
-        
         self.get_mini_board(ult_row, ult_col).make_move(row, col, player)
         self.winner = self.check_win()
         self.complete = self.winner is not None or self.is_full()
@@ -74,9 +73,9 @@ class UltimateBoard:
     def check_majority_win(self):
         ult = self.get_ult_grid()
         total = sum(cell for row in ult for cell in row)
-        if sum > 0:
+        if total > 0:
             return 1
-        elif sum < 0:
+        elif total < 0:
             return -1
         else:
             return 0
