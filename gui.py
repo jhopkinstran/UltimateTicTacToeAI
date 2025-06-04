@@ -1,7 +1,7 @@
 import tkinter as tk
 from board import UltimateBoard
 from game_state import GameState
-from random_agent import RandomAgent
+from agents.random_agent import RandomAgent
 
 CELL_SIZE = 50
 BOARD_SIZE = 9 * CELL_SIZE
