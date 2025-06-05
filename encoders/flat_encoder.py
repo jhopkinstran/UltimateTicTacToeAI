@@ -2,6 +2,7 @@
 from base_encoder import StateEncoder
 import numpy as np
 from game_state import GameState
+
 class FlatEncoder(StateEncoder):
     def encode(self, game_state: GameState):
         """

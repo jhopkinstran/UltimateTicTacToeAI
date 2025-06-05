@@ -1,7 +1,9 @@
 import random
+from agent import Agent
 
-class RandomAgent:
+class RandomAgent(Agent):
     def __init__(self, seed=None):
+        super().__init__()
         if seed is not None:
             random.seed(seed)
 
