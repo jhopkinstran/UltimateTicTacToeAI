@@ -1,9 +1,25 @@
 # Encoder stores the 81 squares, 9 win states, and player turn
 from base_encoder import StateEncoder
 import numpy as np
-
+from game_state import GameState
 class FlatEncoder(StateEncoder):
-    def encode(self, game_state):
+    def encode(self, game_state: GameState):
+        """
+        Returns an encoding of the game state.
+
+        The encoding format:
+        - First 81 numbers represent the squares (flattened 9x9 board),
+        - Next 9 represent the winner of each miniboard,
+        - Last number represents the current player's turn.
+
+        Total length: 90.
+
+        Args:
+            game_state (GameState): The current gamestate of the board.
+
+        Returns:
+            np.ndarray: A length-90 array of dtype np.float32 representing the game state.
+        """
         board = game_state.board
         flat_grid = []
         mini_results = []
