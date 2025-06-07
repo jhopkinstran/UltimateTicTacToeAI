@@ -8,12 +8,14 @@ import torch
 from encoders.flat_encoder import FlatEncoder
 import random
 import numpy as np
+from encoders.base_encoder import StateEncoder
 
 class DQAgent(Agent):
     def __init__(self, 
                  network: BaseNetwork, 
                  state_dim: int, 
                  action_dim: int, 
+                 encoder: StateEncoder,
                  replay_buffer_size: int=10000, 
                  batch_size:int=64, 
                  lr: float = 1e-3, 
@@ -21,7 +23,7 @@ class DQAgent(Agent):
                  epsilon_start: float = 1.0, 
                  epsilon_final: float = 0.01, 
                  epsilon_decay: int = 5000,
-                 steps_reset: int = 1000,
+                 target_update_freq: int = 1000,
                  device: str = "cpu"):
         
         super().__init__()
@@ -48,6 +50,10 @@ class DQAgent(Agent):
         self.epsilon_decay = epsilon_decay
         self.steps = 0
 
+        self.target_update_freq = target_update_freq
+        self.steps_since_target_update = 0
+
+        self.encoder = encoder
         self.device = device
 
     def get_action(self, game_state: GameState) -> Tuple[int, int, int, int]:
@@ -55,8 +61,7 @@ class DQAgent(Agent):
         if not valid_actions:
             raise ValueError("No valid actions available to DQN Agent")
 
-        encoder = FlatEncoder()
-        encoding = encoder.encode(game_state)
+        encoding = self.encoder.encode(game_state)
         state_tensor = torch.tensor(encoding, dtype=torch.float32, device = self.device)
 
         with torch.no_grad():
@@ -110,7 +115,22 @@ class DQAgent(Agent):
         loss.backward()
         self.optimizer.step()
 
+        self.steps_since_target_update += 1
+        if self.steps_since_target_update >= self.target_update_freq:
+            self.update_target_network()
+            self.steps_since_target_update = 0
+
         return loss.item()
     
     def update_target_network(self):
         self.target_network.load_state_dict(self.network.state_dict())
+
+    def prefill_replay_buffer(self, env, agent, buffer):
+        state = env.reset()
+        while len(buffer) < self.batch_size:
+            valid_actions = env.get_valid_actions()
+            action = random.choice(valid_actions)
+            next_state, reward, done, _ = env.step(action)
+            
+            buffer.push(state, agent.action_to_index(action), reward, next_state, done)
+            state = next_state if not done else env.reset()

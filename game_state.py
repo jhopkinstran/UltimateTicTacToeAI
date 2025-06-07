@@ -80,3 +80,7 @@ class GameState:
     
     def switch_player(self):
         self.player_turn *= -1
+
+
+def compute_reward(game_state: GameState, agent_player: int) -> float:
+    
