@@ -3,11 +3,11 @@ from encoders import FlatEncoder
 from game_env import compute_reward
 import random
 
-def train(agent, encoder, num_episodes=1000, max_steps_per_episode=100):
+def train(agent, encoder, num_episodes=1000, max_steps_per_episode=100, prefill_size=1000):
     env = UltimateTicTacToeEnv(ruleset="default")
 
     print("Prefilling replay buffer with random actions...")
-    while len(agent.replay_buffer) < agent.batch_size:
+    while len(agent.replay_buffer) < prefill_size:
         env.reset()
         done = False
         steps = 0
